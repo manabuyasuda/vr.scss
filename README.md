@@ -138,14 +138,13 @@ h6 {
 「Vertical Rhythm」を可視化するため以下のHTMLとscssコードを記述します。ピンクとグレーの線がズレていたら、記述ミスか、行の高さが割り切れていない可能性があります。
 
 ```html
-&lt;div class=&quot;grid&quot;&gt;
-  &lt;div class=&quot;line&quot;&gt;&amp;nbsp;&lt;/div&gt;
-  &lt;div class=&quot;line&quot;&gt;&amp;nbsp;&lt;/div&gt;
-  &lt;div class=&quot;line&quot;&gt;&amp;nbsp;&lt;/div&gt;
-  &lt;div class=&quot;line&quot;&gt;&amp;nbsp;&lt;/div&gt;
-  &lt;div class=&quot;line&quot;&gt;&amp;nbsp;&lt;/div&gt;
-  &lt;div class=&quot;line&quot;&gt;&amp;nbsp;&lt;/div&gt;
-&lt;/div&gt;
+<div class="grid">
+  <div class="line">&nbsp;</div>
+  <div class="line">&nbsp;</div>
+  <div class="line">&nbsp;</div>
+  <div class="line">&nbsp;</div>
+  <div class="line">&nbsp;</div>
+</div>
 ```
 
 ```scss
