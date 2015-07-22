@@ -134,6 +134,99 @@ h6 {
 }
 ```
 
+以下のようにCSSにコンパイルされます。
+
+```css
+html {
+    font-size: 15px;
+    line-height: 1.6;
+}
+@media only screen and (min-width: 1024px) {
+    html {
+        font-size: 16px;
+        line-height: 1.75;
+    }
+}
+
+h1 {
+    font-size: 1.73333rem;
+    line-height: 3.2rem;
+}
+@media only screen and (min-width: 1024px) {
+    h1 {
+        font-size: 1.875rem;
+        line-height: 3.5rem;
+    }
+}
+
+h2 {
+    font-size: 1.33333rem;
+    line-height: 1.6rem;
+}
+@media only screen and (min-width: 1024px) {
+    h2 {
+        font-size: 1.5rem;
+        line-height: 1.75rem;
+    }
+}
+
+h3 {
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+}
+@media only screen and (min-width: 1024px) {
+    h3 {
+        font-size: 1.375rem;
+        line-height: 1.75rem;
+    }
+}
+
+h1 {
+    margin-top: 3.2rem;
+    margin-bottom: 3.2rem;
+}
+@media only screen and (min-width: 1024px) {
+    h1 {
+        margin-top: 3.5rem;
+        margin-bottom: 3.5rem;
+    }
+}
+
+h2,
+h3 {
+    margin-top: 3.2rem;
+    margin-bottom: 1.6rem;
+}
+@media only screen and (min-width: 1024px) {
+    h2,
+    h3 {
+        margin-top: 3.5rem;
+        margin-bottom: 1.75rem;
+    }
+}
+
+p,
+ul,
+ol,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    margin-bottom: 1.6rem;
+}
+@media only screen and (min-width: 1024px) {
+    p,
+    ul,
+    ol,
+    h4,
+    h5,
+    h6 {
+        margin-bottom: 1.75rem;
+    }
+}
+
+```
+
 ## テスト環境
 「Vertical Rhythm」を可視化するため以下のHTMLとscssコードを記述します。ピンクとグレーの線がズレていたら、記述ミスか、行の高さが割り切れていない可能性があります。
 
