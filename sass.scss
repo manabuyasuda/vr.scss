@@ -1,0 +1,248 @@
+// -----------------------------------------------------------------
+// Base
+// -----------------------------------------------------------------
+
+//
+// Vertical Rhythmのベースになる行の高さを`$base-spacing`に定義します。
+// vertical rhythmとは1行の高さをひとつの単位として利用することで、一定のパターンを作り出す手法のことです。
+// ベースを`$base-font-size`と`$base-spacing`で定義します。
+// `$shift-vertical-rhythm`をtrueにした場合はレスポンシブ対応として、`$shift-font-size`と`$shift-spacing`が有効になります。
+// フォントサイズを変更する@mixinとして`vr-font-size()`、要素間の余白を指定する@mixinとして`vr-spacing()`が用意されています。
+//
+$base-font-size: 15px !default;
+$base-spacing: 24px !default;
+$base-line-height: ($base-spacing / $base-font-size) !default;
+
+$shift-vertical-rhythm: true !default;
+$shift-font-size: 16px !default;
+$shift-spacing: 28px !default;
+$shift-line-height: ($shift-spacing / $shift-font-size) !default;
+
+
+// -----------------------------------------------------------------
+// Media query
+// -----------------------------------------------------------------
+
+//
+// メディアクエリに使用するブレイクポイントを定義します。
+// `min-width`をベースにしたモバイルファーストです。
+// 各変数と引数の名前は以下のような意味合いになっています。
+//
+// * $palmは手のひらに載るサイズの端末で、iPhone6PLUS（414px）のようなファブレット端末を想定しています。
+// * $tabはiPadのようなタブレット端末です。
+// * $lapはラップトップパソコンのような持ち運びができるサイズのPCです。
+// * $deskはデスクトップパソコンのような机の上に固定されるサイズのPCです。
+// `$below-`は付与すると`max-width`として指定されます（e.g. $below-palm）。
+//
+$palm: 400px !default;
+$tab: 768px !default;
+$lap: 1024px !default;
+$desk: 1200px !default;
+$below-palm: ($palm - 1px) !default;
+$below-tab: ($tab - 1px) !default;
+$below-lap: ($lap - 1px) !default;
+$vr: $lap;
+
+
+// ==========================================================================
+// Mixin media query
+// ==========================================================================
+
+//
+// メディアクエリを使用するための@mixinです。
+//
+// e.g.
+// .selector {
+//     // your style
+//     @include media-query(vr) {
+//         // your style
+//     }
+// }
+//
+@mixin media-query($media-query){
+    // @media screen and (min-width: 1024px){}
+    @if $media-query == vr{
+        @media only screen and (min-width: $vr) {
+            @content;
+        }
+    }
+}
+
+
+// ==========================================================================
+// Mixin vertical rhythm
+// ==========================================================================
+
+//
+// 1行の高さを揃えるための@mixinです。remに変換された`font-size`と`line-height`を返します。
+// 引数は2つまで指定することができます。第一引数はベース、第二引数は`lap`のブレイクポイント以降に対応します。
+// 引数はpxで指定してください。
+// 第二引数を指定しない場合は第一引数の値が使用されます。
+// 指定したフォントサイズが行の高さを超えると、行の高さが自動的に1つ増えます。
+// 下の例を確認すると、フォントサイズが行の高さを超えた`.selector2`は`line-height`が2倍になっています。
+// `$shift-vertical-rhythm`をtrueに指定するとブレイクポイントを追加することができます。
+//
+// e.g.
+//
+// $base-font-size: 15px !default;
+// $base-spacing: 24px !default;
+// $shift-vertical-rhythm: true !default;
+// $shift-font-size: 16px !default;
+// $shift-spacing: 28px !default;
+//
+// .selector1 { @include vr-font-size(24px, 28px); }
+// .selector2 { @include vr-font-size(25px, 29px); }
+//
+// .selector1 {
+//     font-size: 1.6rem;
+//     line-height: 1.6rem;
+// }
+// @media only screen and (min-width: 1024px) {
+//     .selector1 {
+//         font-size: 1.75rem;
+//         line-height: 1.75rem;
+//     }
+// }
+//
+// .selector2 {
+//     font-size: 1.66667rem;
+//     line-height: 3.2rem;
+// }
+// @media only screen and (min-width: 1024px) {
+//     .selector2 {
+//         font-size: 1.8125rem;
+//         line-height: 3.5rem;
+//     }
+// }
+//
+@mixin vr-font-size($font-size, $font-size-shift: $font-size) {
+    font-size: ($font-size / $base-font-size) * 1rem;
+    line-height: $base-line-height * (ceil($font-size / $base-spacing) * 1rem);
+    @if $shift-vertical-rhythm == true {
+        @include media-query(vr) {
+            font-size: ($font-size-shift / $shift-font-size) * 1rem;
+            line-height: $shift-line-height * (ceil($font-size-shift / $shift-spacing) * 1rem);
+        }
+    }
+}
+
+
+//
+// 要素間の余白を揃えるための@mixinです。remに変換された`margin-top`と`margin-bottom`を返します。
+// 引数は2つ指定することができます。第一引数は`margin-top`に第二引数は`margin-bottom`に対応しています。
+// 引数には行の数（整数の単位なし）を指定してください。
+// `$shift-vertical-rhythm`をtrueに指定すると自動的にブレイクポイントが追加されます。
+//
+// e.g.
+//
+// $base-font-size: 15px !default;
+// $base-spacing: 24px !default;
+// $-shift-vertical-rhythm: true !default;
+// $-shift-font-size: 16px !default;
+// $-shift-spacing: 28px !default;
+//
+// .selector1 { @include vr-spacing(); }
+// .selector2 { @include vr-spacing(2, 2); }
+//
+// .selector1 {
+//     margin-top: 0;
+//     margin-bottom: 1.6rem;
+// }
+// @media only screen and (min-width: 1024px) {
+//     .selector1 {
+//         margin-bottom: 1.75rem;
+//     }
+// }
+//
+// .selector2 {
+//     margin-top: 3.2rem;
+//     margin-bottom: 3.2rem;
+// }
+// @media only screen and (min-width: 1024px) {
+//     .selector2 {
+//         margin-top: 3.5rem;
+//         margin-bottom: 3.5rem;
+//     }
+// }
+//
+@mixin vr-spacing($top: 0, $bottom: 1) {
+    $top-unit: 1rem;
+    $bottom-unit: 1rem;
+    @if $top == 0 {
+        $top-unit: 0;
+    }
+    @if $bottom == 0 {
+        $bottom-unit: 0;
+    }
+    margin-top: ($base-line-height * $top-unit) * $top;
+    margin-bottom: ($base-line-height * $bottom-unit) * $bottom;
+    @if $shift-vertical-rhythm == true {
+        @include media-query(vr) {
+            @if $top != 0 {
+                margin-top: ($shift-line-height * $top-unit) * $top;
+            }
+            @if $bottom != 0 {
+                margin-bottom: ($shift-line-height * $bottom-unit) * $bottom;
+            }
+        }
+    }
+}
+
+html {
+    font-size: $base-font-size;
+    line-height: $base-line-height;
+    @if $shift-vertical-rhythm == true {
+        @include media-query(vr) {
+            font-size: $shift-font-size;
+            line-height: $shift-line-height;
+        }
+    }
+}
+
+h1 { @include vr-font-size(26px, 30px); }
+h2 { @include vr-font-size(20px, 24px); }
+h3 { @include vr-font-size(18px, 22px); }
+
+h1 { @include vr-spacing(2,2); }
+h2,
+h3 {
+    @include vr-spacing(2,1);
+}
+p,
+ul,
+ol,
+h4,
+h5,
+h6 {
+    @include vr-spacing();
+}
+
+.grid {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    .line {
+        font-size: 1rem;
+        line-height: $base-line-height;
+        box-shadow: 0 1px 0 #eee;
+        @if $shift-vertical-rhythm == true {
+            @include media-query(vr) {
+                line-height: $shift-line-height;
+            }
+        }
+    }
+}
+p,
+ul,
+ol,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    box-shadow: 0 1px 0 #faa, inset 0 1px 0 #faa;
+}
