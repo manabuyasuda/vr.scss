@@ -34,14 +34,17 @@ $shift-line-height: ($shift-spacing / $shift-font-size) !default;
 // * $deskはデスクトップパソコンのような机の上に固定されるサイズのPCです。
 // `$below-`は付与すると`max-width`として指定されます（e.g. $below-palm）。
 //
-$palm: 400px !default;
-$tab: 768px !default;
-$lap: 1024px !default;
-$desk: 1200px !default;
-$below-palm: ($palm - 1px) !default;
-$below-tab: ($tab - 1px) !default;
-$below-lap: ($lap - 1px) !default;
-$vr: $lap;
+$breakpoints: (
+    'palm': (min-width: 400px),
+    'tab': (min-width: 768px),
+    'lap': (min-width: 1000px),
+    'desk': (min-width: 1200px),
+    'below-palm': (max-width: 399px),
+    'below-tab': (max-width: 767px),
+    'below-lap': (max-width: 999px),
+    'below-desk': (max-width: 1199px),
+    'vr': (min-width: 1000px)
+) !default;
 
 
 // ==========================================================================
@@ -59,12 +62,15 @@ $vr: $lap;
 //     }
 // }
 //
-@mixin media-query($media-query){
-    // @media screen and (min-width: 1024px){}
-    @if $media-query == vr{
-        @media only screen and (min-width: $vr) {
+@mixin media-query($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media only screen and #{inspect(map-get($breakpoints, $breakpoint))} {
             @content;
         }
+    }
+    @else {
+        @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+        + "Available breakpoints are: #{map-keys($breakpoints)}.";
     }
 }
 

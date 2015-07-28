@@ -22,17 +22,20 @@ $shift-spacing: 28px !default;
 $shift-line-height: ($shift-spacing / $shift-font-size) !default;
 ```
 
-ブレイクポイントの`$vr`はデフォルトで1024px以上になっています。
+ブレイクポイントの`$vr`はデフォルトで1000px以上になっています。
 
 ```scss
-$palm: 400px !default;
-$tab: 768px !default;
-$lap: 1024px !default;
-$desk: 1200px !default;
-$below-palm: ($palm - 1px) !default;
-$below-tab: ($tab - 1px) !default;
-$below-lap: ($lap - 1px) !default;
-$vr: $lap;
+$breakpoints: (
+    'palm': (min-width: 400px),
+    'tab': (min-width: 768px),
+    'lap': (min-width: 1000px),
+    'desk': (min-width: 1200px),
+    'below-palm': (max-width: 399px),
+    'below-tab': (max-width: 767px),
+    'below-lap': (max-width: 999px),
+    'below-desk': (max-width: 1199px),
+    'vr': (min-width: 1000px)
+) !default;
 ```
 
 ## @mixin
@@ -44,12 +47,15 @@ $vr: $lap;
 1. `margin-top`と`margin-bottom`を返す@mixin
 
 ```scss
-@mixin media-query($media-query){
-    // @media screen and (min-width: 1024px){}
-    @if $media-query == vr{
-        @media only screen and (min-width: $vr) {
+@mixin media-query($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media only screen and #{inspect(map-get($breakpoints, $breakpoint))} {
             @content;
         }
+    }
+    @else {
+        @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+        + "Available breakpoints are: #{map-keys($breakpoints)}.";
     }
 }
 
