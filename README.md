@@ -5,12 +5,12 @@
 [DEMO](http://codepen.io/gaku/pen/ZGjZyJ)
 
 ## 変数
-最終的な出力結果はremですが、変数はすべてpxで指定します。`$base-font-size`と`$base-spacing`にサイズを指定してください。行の高さとフォントサイズを割った数値が`24/16=1.71429`のように小数点の桁が大きい場合はブラウザでpxに変換される時にズレが生まれやすいので、なるべく避けてください。
+最終的な出力結果はremですが、変数はすべてpxで指定します。`$base-font-size`と`$base-spacing`にサイズを指定してください。行の高さとフォントサイズを割った数値が`24/16=1.71429`のように小数点の桁が大きい場合はブラウザでpxに変換される時にズレが生まれやすいので、terkei(https://github.com/terkel)さんが作られた`decimal-round`関数で小数点以下3桁までに指定しています。
 
 ```scss
-$base-font-size: 15px !default;
+$base-font-size: 14px !default;
 $base-spacing: 24px !default;
-$base-line-height: ($base-spacing / $base-font-size) !default;
+$base-line-height: decimal-round($base-spacing / $base-font-size, 3, ceil) !default;
 ```
 
 行の高さやフォントサイズをレスポンシブに変更したい場合は`$shift-vertical-rhythm`をtrueにします。`$shift-`から始まる変数はレスポンシブ用の変数になります。
