@@ -5,7 +5,7 @@
 [DEMO](http://codepen.io/gaku/pen/ZGjZyJ)
 
 ## 変数
-最終的な出力結果はremですが、変数はすべてpxで指定します。`$base-font-size`と`$base-spacing`にサイズを指定してください。行の高さとフォントサイズを割った数値が`24/16=1.71429`のように小数点の桁が大きい場合はブラウザでpxに変換される時にズレが生まれやすいので、terkei(https://github.com/terkel)さんが作られた`decimal-round`関数で小数点以下3桁までに指定しています。
+最終的な出力結果はremですが、変数はすべてpxで指定します。`$base-font-size`と`$base-spacing`にサイズを指定してください。行の高さとフォントサイズを割った数値が`24/16=1.71429`のように小数点の桁が大きい場合はブラウザでpxに変換される時にズレが生まれやすいので、[terkei](https://github.com/terkel)さんが作られた`decimal-round`関数で小数点以下3桁までに指定しています。
 
 ```scss
 $base-font-size: 14px !default;
