@@ -144,10 +144,10 @@ h6 {
 
 ```css
 html {
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 14px;
+    line-height: 1.715;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
     html {
         font-size: 16px;
         line-height: 1.75;
@@ -155,10 +155,10 @@ html {
 }
 
 h1 {
-    font-size: 1.73333rem;
-    line-height: 3.2rem;
+    font-size: 1.85714rem;
+    line-height: 3.43rem;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
     h1 {
         font-size: 1.875rem;
         line-height: 3.5rem;
@@ -166,10 +166,10 @@ h1 {
 }
 
 h2 {
-    font-size: 1.33333rem;
-    line-height: 1.6rem;
+    font-size: 1.42857rem;
+    line-height: 1.715rem;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
     h2 {
         font-size: 1.5rem;
         line-height: 1.75rem;
@@ -177,21 +177,54 @@ h2 {
 }
 
 h3 {
-    font-size: 1.2rem;
-    line-height: 1.6rem;
+    font-size: 1.28571rem;
+    line-height: 1.715rem;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
     h3 {
         font-size: 1.375rem;
         line-height: 1.75rem;
     }
 }
 
-h1 {
-    margin-top: 3.2rem;
-    margin-bottom: 3.2rem;
+h4 {
+    font-size: 1.14286rem;
+    line-height: 1.715rem;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
+    h4 {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
+}
+
+h5 {
+    font-size: 1.07143rem;
+    line-height: 1.715rem;
+}
+@media only screen and (min-width: 1000px) {
+    h5 {
+        font-size: 1rem;
+        line-height: 1.75rem;
+    }
+}
+
+h6 {
+    font-size: .92857rem;
+    line-height: 1.715rem;
+}
+@media only screen and (min-width: 1000px) {
+    h6 {
+        font-size: .875rem;
+        line-height: 1.75rem;
+    }
+}
+
+h1 {
+    margin-top: 3.43rem;
+    margin-bottom: 3.43rem;
+}
+@media only screen and (min-width: 1000px) {
     h1 {
         margin-top: 3.5rem;
         margin-bottom: 3.5rem;
@@ -200,10 +233,10 @@ h1 {
 
 h2,
 h3 {
-    margin-top: 3.2rem;
-    margin-bottom: 1.6rem;
+    margin-top: 3.43rem;
+    margin-bottom: 1.715rem;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
     h2,
     h3 {
         margin-top: 3.5rem;
@@ -218,9 +251,9 @@ h4,
 h5,
 h6 {
     margin-top: 0;
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.715rem;
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1000px) {
     p,
     ul,
     ol,
@@ -230,7 +263,6 @@ h6 {
         margin-bottom: 1.75rem;
     }
 }
-
 ```
 
 ## テスト環境
