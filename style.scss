@@ -1,312 +1,230 @@
-// _decimal.scss | MIT License | gist.github.com/terkel/4373420
+//
+// #Function
+//
 
-// Round a number to specified digits.
+// @desc - pxの引数を渡して単位なしとremの相対値を返す関数です。
+// @type Funciton
+// @prop {Number} $fs - `font-size`に指定する値をpxで指定します。
+// @prop {Number} $lh - `line-height`に指定する値をpxで指定します。
+// @return {List} - 第一引数, 第二引数, 第二引数と第一引数の除算の単位なしの相対値, 第二引数と第一引数の除算のremの相対値
+// @require {Map} $vr-font-sizes - フォントサイズと行の高さを定義しているマップです。
 //
-// @param  {Number} $number A number to round
-// @param  {Number} [$digits:0] Digits to output
-// @param  {String} [$mode:round] (round|ceil|floor) How to round a number
-// @return {Number} A rounded number
-// @example
-//     decimal-round(0.333)    => 0
-//     decimal-round(0.333, 1) => 0.3
-//     decimal-round(0.333, 2) => 0.33
-//     decimal-round(0.666)    => 1
-//     decimal-round(0.666, 1) => 0.7
-//     decimal-round(0.666, 2) => 0.67
+// @example scss - Usage
+// vr(14px, 24px) => 14px, 24px, 1.715, 1.715rem
 //
-@function decimal-round ($number, $digits: 0, $mode: round) {
-    $n: 1;
-    // $number must be a number
-    @if type-of($number) != number {
-        @warn '#{ $number } is not a number.';
-        @return $number;
-    }
-    // $digits must be a unitless number
-    @if type-of($digits) != number {
-        @warn '#{ $digits } is not a number.';
-        @return $number;
-    } @else if not unitless($digits) {
-        @warn '#{ $digits } has a unit.';
-        @return $number;
-    }
-    @for $i from 1 through $digits {
-        $n: $n * 10;
-    }
-    @if $mode == round {
-        @return round($number * $n) / $n;
-    } @else if $mode == ceil {
-        @return ceil($number * $n) / $n;
-    } @else if $mode == floor {
-        @return floor($number * $n) / $n;
-    } @else {
-        @warn '#{ $mode } is undefined keyword.';
-        @return $number;
-    }
-}
-
-// Ceil a number to specified digits.
-//
-// @param  {Number} $number A number to round
-// @param  {Number} [$digits:0] Digits to output
-// @return {Number} A ceiled number
-// @example
-//     decimal-ceil(0.333)    => 1
-//     decimal-ceil(0.333, 1) => 0.4
-//     decimal-ceil(0.333, 2) => 0.34
-//     decimal-ceil(0.666)    => 1
-//     decimal-ceil(0.666, 1) => 0.7
-//     decimal-ceil(0.666, 2) => 0.67
-//
-@function decimal-ceil ($number, $digits: 0) {
-    @return decimal-round($number, $digits, ceil);
-}
-
-// Floor a number to specified digits.
-//
-// @param  {Number} $number A number to round
-// @param  {Number} [$digits:0] Digits to output
-// @return {Number} A floored number
-// @example
-//     decimal-floor(0.333)    => 0
-//     decimal-floor(0.333, 1) => 0.3
-//     decimal-floor(0.333, 2) => 0.33
-//     decimal-floor(0.666)    => 0
-//     decimal-floor(0.666, 1) => 0.6
-//     decimal-floor(0.666, 2) => 0.66
-//
-@function decimal-floor ($number, $digits: 0) {
-    @return decimal-round($number, $digits, floor);
+@function vr($fs, $lh) {
+    // 小数点以下を3桁までに制限します。100に変更すると2桁に制限できます。
+    $n: 1000;
+    $vr: ceil(($lh / $fs) * $n) / $n;
+    $rem: $vr * 1rem;
+    @return ($fs, $lh, $vr, $rem);
 }
 
 
-// -----------------------------------------------------------------
-// Base
-// -----------------------------------------------------------------
-
-//
-// Vertical Rhythmのベースになる行の高さを`$base-spacing`に定義します。
-// vertical rhythmとは1行の高さをひとつの単位として利用することで、一定のパターンを作り出す手法のことです。
-// ベースを`$base-font-size`と`$base-spacing`で定義します。
-// `$shift-vertical-rhythm`をtrueにした場合はレスポンシブ対応として、`$shift-font-size`と`$shift-spacing`が有効になります。
-// フォントサイズを変更する@mixinとして`vr-font-size()`、要素間の余白を指定する@mixinとして`vr-spacing()`が用意されています。
-//
-$base-font-size: 14px !default;
-$base-spacing: 24px !default;
-$base-line-height: decimal-round($base-spacing / $base-font-size, 3, ceil) !default;
-
-$shift-vertical-rhythm: true !default;
-$shift-font-size: 16px !default;
-$shift-spacing: 28px !default;
-$shift-line-height: decimal-round($shift-spacing / $shift-font-size, 3, ceil) !default;
-
-
-// -----------------------------------------------------------------
-// Media query
-// -----------------------------------------------------------------
-
-//
-// メディアクエリに使用するブレイクポイントを定義します。
-// `min-width`をベースにしたモバイルファーストです。
-// 各変数と引数の名前は以下のような意味合いになっています。
-//
-// * $palmは手のひらに載るサイズの端末で、iPhone6PLUS（414px）のようなファブレット端末を想定しています。
-// * $tabはiPadのようなタブレット端末です。
-// * $lapはラップトップパソコンのような持ち運びができるサイズのPCです。
-// * $deskはデスクトップパソコンのような机の上に固定されるサイズのPCです。
-// `$below-`は付与すると`max-width`として指定されます（e.g. $below-palm）。
-//
-$breakpoints: (
-    'palm': (min-width: 400px),
-    'tab': (min-width: 768px),
-    'lap': (min-width: 1000px),
-    'desk': (min-width: 1200px),
-    'below-palm': (max-width: 399px),
-    'below-tab': (max-width: 767px),
-    'below-lap': (max-width: 999px),
-    'below-desk': (max-width: 1199px),
-    'vr': (min-width: 1000px)
+// @desc - ブレイクポイントを管理するためのmapです。
+// @type Map
+// @prop {String} keys - ブレイクポイントのキーワードです。
+// @prop {String} values - メディアクエリの条件です。
+$vr-breakpoints: (
+    'sm': 'screen and (min-width: 400px)',
+    'md': 'screen and (min-width: 768px)',
+    'lg': 'screen and (min-width: 1000px)',
+    'xl': 'screen and (min-width: 1200px)',
 ) !default;
 
 
-// ==========================================================================
-// Mixin media query
-// ==========================================================================
+//
+// #Font-size
+//
+
+// @desc - フォントサイズと行の高さを定義しているマップです。
+// @prop {String} keys - keyは呼び出す時のキーワードになります。
+// @prop {String} values - 呼び出される`font-size`と`line-height`になります。
+// @requires {Function} vr - pxの引数を渡して単位なしとremの相対値を返す関数です。
+// @see {Map} $vr-breakpoints - ブレイクポイントを管理するmapです。同じkeyを指定してくだい。
+$vr-base-font-sizes: (
+    'base': vr(14px, 24px),
+    "lg": vr(16px, 28px),
+) !default;
+
+$vr-h1-font-sizes: (
+    'base': vr(26px, 24px * 2),
+    'lg': vr(30px, 28px * 2),
+) !default;
+
+$vr-h2-font-sizes: (
+    'base': vr(22px, 24px),
+    'lg': vr(26px, 28px),
+) !default;
+
+$vr-h3-font-sizes: (
+    'base': vr(20px, 24px),
+    'lg': vr(24px, 28px),
+) !default;
+
+$vr-h4-font-sizes: (
+    'base': vr(16px, 24px),
+    'lg': vr(20px, 28px),
+) !default;
+
+$vr-h5-font-sizes: (
+    'base': vr(14px, 24px),
+    'lg': vr(16px, 28px),
+) !default;
+
+$vr-h6-font-sizes: (
+    'base': vr(12px, 24px),
+    'lg': vr(14px, 28px),
+) !default;
+
+$vr-small-font-sizes: (
+    'base': vr(12px, 24px),
+    'lg': vr(14px, 28px),
+) !default;
+
 
 //
-// メディアクエリを使用するための@mixinです。
+// #Vertical-rhythm
 //
-// e.g.
-// .selector {
-//     // your style
-//     @include media-query(vr) {
-//         // your style
+
+// @desc - Vertical-rhythmに対応した`font-size`(px)と`line-height`(単位なし)を返すmixinです。
+// @type Mixin
+// @prop {Map} $fs($vr-base-font-sizes) -
+// @requires {Map} $vr-base-font-sizes - rootのフォントサイズと行の高さを定義しているマップです。
+// @requires {Map} $vr-breakpoints - ブレイクポイントを管理するためのmapです。
+//
+// @example scss - Usage
+// .foo {
+//     @include vr-font-size($vr-base-font-sizes);
+// }
+//
+// @example css - CSS output
+// .foo {
+//     font-size: 14px;
+//     line-height: 1.715;
+// }
+//
+// @media screen and (min-width: 1000px) {
+//     .foo {
+//         font-size: 16px;
+//         line-height: 1.75;
 //     }
 // }
 //
-@mixin media-query($breakpoint) {
-    @if map-has-key($breakpoints, $breakpoint) {
-        @media only screen and #{inspect(map-get($breakpoints, $breakpoint))} {
-            @content;
-        }
-    }
-    @else {
-        @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
-        + "Available breakpoints are: #{map-keys($breakpoints)}.";
-    }
-}
-
-
-// ==========================================================================
-// Mixin vertical rhythm
-// ==========================================================================
-
-//
-// 1行の高さを揃えるための@mixinです。remに変換された`font-size`と`line-height`を返します。
-// 引数は2つまで指定することができます。第一引数はベース、第二引数は`lap`のブレイクポイント以降に対応します。
-// 引数はpxで指定してください。
-// 第二引数を指定しない場合は第一引数の値が使用されます。
-// 指定したフォントサイズが行の高さを超えると、行の高さが自動的に1つ増えます。
-// 下の例を確認すると、フォントサイズが行の高さを超えた`.selector2`は`line-height`が2倍になっています。
-// `$shift-vertical-rhythm`をtrueに指定するとブレイクポイントを追加することができます。
-//
-// e.g.
-//
-// $base-font-size: 15px !default;
-// $base-spacing: 24px !default;
-// $shift-vertical-rhythm: true !default;
-// $shift-font-size: 16px !default;
-// $shift-spacing: 28px !default;
-//
-// .selector1 { @include vr-font-size(24px, 28px); }
-// .selector2 { @include vr-font-size(25px, 29px); }
-//
-// .selector1 {
-//     font-size: 1.6rem;
-//     line-height: 1.6rem;
-// }
-// @media only screen and (min-width: 1024px) {
-//     .selector1 {
-//         font-size: 1.75rem;
-//         line-height: 1.75rem;
-//     }
-// }
-//
-// .selector2 {
-//     font-size: 1.66667rem;
-//     line-height: 3.2rem;
-// }
-// @media only screen and (min-width: 1024px) {
-//     .selector2 {
-//         font-size: 1.8125rem;
-//         line-height: 3.5rem;
-//     }
-// }
-//
-@mixin vr-font-size($font-size, $font-size-shift: $font-size) {
-    font-size: ($font-size / $base-font-size) * 1rem;
-    line-height: $base-line-height * (ceil($font-size / $base-spacing) * 1rem);
-    @if $shift-vertical-rhythm == true {
-        @include media-query(vr) {
-            font-size: ($font-size-shift / $shift-font-size) * 1rem;
-            line-height: $shift-line-height * (ceil($font-size-shift / $shift-spacing) * 1rem);
-        }
-    }
-}
-
-
-//
-// 要素間の余白を揃えるための@mixinです。remに変換された`margin-top`と`margin-bottom`を返します。
-// 引数は2つ指定することができます。第一引数は`margin-top`に第二引数は`margin-bottom`に対応しています。
-// 引数には行の数（整数の単位なし）を指定してください。
-// `$shift-vertical-rhythm`をtrueに指定すると自動的にブレイクポイントが追加されます。
-//
-// e.g.
-//
-// $base-font-size: 15px !default;
-// $base-spacing: 24px !default;
-// $-shift-vertical-rhythm: true !default;
-// $-shift-font-size: 16px !default;
-// $-shift-spacing: 28px !default;
-//
-// .selector1 { @include vr-spacing(); }
-// .selector2 { @include vr-spacing(2, 2); }
-//
-// .selector1 {
-//     margin-top: 0;
-//     margin-bottom: 1.6rem;
-// }
-// @media only screen and (min-width: 1024px) {
-//     .selector1 {
-//         margin-bottom: 1.75rem;
-//     }
-// }
-//
-// .selector2 {
-//     margin-top: 3.2rem;
-//     margin-bottom: 3.2rem;
-// }
-// @media only screen and (min-width: 1024px) {
-//     .selector2 {
-//         margin-top: 3.5rem;
-//         margin-bottom: 3.5rem;
-//     }
-// }
-//
-@mixin vr-spacing($top: 0, $bottom: 1) {
-    $top-unit: 1rem;
-    $bottom-unit: 1rem;
-    @if $top == 0 {
-        $top-unit: 0;
-    }
-    @if $bottom == 0 {
-        $bottom-unit: 0;
-    }
-    margin-top: ($base-line-height * $top-unit) * $top;
-    margin-bottom: ($base-line-height * $bottom-unit) * $bottom;
-    @if $shift-vertical-rhythm == true {
-        @include media-query(vr) {
-            @if $top != 0 {
-                margin-top: ($shift-line-height * $top-unit) * $top;
-            }
-            @if $bottom != 0 {
-                margin-bottom: ($shift-line-height * $bottom-unit) * $bottom;
+@mixin vr-font-size($fs: $vr-base-font-sizes) {
+    $bp: $vr-breakpoints;
+    @each $name, $unit in $fs {
+        @if $name == "base" {
+             font-size: nth($unit, 1);
+             line-height: nth($unit, 3);
+        } @else {
+            @if map-has-key($bp, $name) {
+                @media #{map-get($bp, $name)} {
+                    font-size: nth($unit, 1);
+                    line-height: nth($unit, 3);
+                }
             }
         }
     }
 }
+
+// @desc - Vertical Rhythmに対応した余白を返します。
+// @type Mixin
+// @prop {String} $prop - プロパティ名を渡します。
+// @prop {Number} $vr(1) - 指定したい行数を渡します。
+// @prop {String} $important(false) - `!important`を指定したい場合は文字列`important`を渡します。
+// @requires {Map} $vr-base-font-sizes - rootのフォントサイズと行の高さを定義しているマップです。
+// @requires {Map} $vr-breakpoints - ブレイクポイントを管理するためのmapです。
+//
+// @example scss - Usage
+// .foo {
+//   @include my-vertical-rhythm(margin-top, 1);
+//   @include my-vertical-rhythm(margin-bottom, 1);
+// }
+//
+// @example css - CSS output
+// .foo {
+//   margin-top: 24px;
+//   margin-bottom: 24px;
+// }
+// @media screen and (min-width: 1000px) {
+//   .foo {
+//     margin-top: 28px;
+//   }
+// }
+// @media screen and (min-width: 1000px) {
+//   .foo {
+//     margin-bottom: 28px;
+//   }
+// }
+//
+@mixin vr-vertical-rhythm($prop, $vr: 1, $important: false) {
+    @if ($important == "important") {
+        $important: unquote("!important");
+    } @else {
+        $important: null;
+    }
+    $bp: $vr-breakpoints;
+    @each $name, $unit in $vr-base-font-sizes {
+        @if $name == "base" {
+            #{$prop}: nth($unit, 2) * $vr $important;
+        } @else {
+            @if map-has-key($bp, $name) {
+                @media #{map-get($bp, $name)} {
+                    #{$prop}: nth($unit, 2) * $vr $important;
+                }
+            }
+        }
+    }
+}
+
 
 html {
-    font-size: $base-font-size;
-    line-height: $base-line-height;
-    @if $shift-vertical-rhythm == true {
-        @include media-query(vr) {
-            font-size: $shift-font-size;
-            line-height: $shift-line-height;
-        }
-    }
+    @include vr-font-size;
 }
 
-h1 { @include vr-font-size(26px, 30px); }
-h2 { @include vr-font-size(20px, 24px); }
-h3 { @include vr-font-size(18px, 22px); }
-h4 { @include vr-font-size(16px, 18px); }
-h5 { @include vr-font-size(15px, 16px); }
-h6 { @include vr-font-size(13px, 14px); }
+h1 {
+    @include vr-font-size($vr-h1-font-sizes);
+}
 
-h1 { @include vr-spacing(2,2); }
+h2 {
+    @include vr-font-size($vr-h2-font-sizes);
+}
 
-h2,
 h3 {
-    @include vr-spacing(2,1);
+    @include vr-font-size($vr-h3-font-sizes);
 }
 
-p,
-ul,
-ol,
-h4,
-h5,
+h4 {
+    @include vr-font-size($vr-h4-font-sizes);
+}
+
+h5 {
+    @include vr-font-size($vr-h5-font-sizes);
+}
+
 h6 {
-    @include vr-spacing();
+    @include vr-font-size($vr-h6-font-sizes);
+}
+
+h1 {
+    @include vr-vertical-rhythm(margin-top, 2);
+    @include vr-vertical-rhythm(margin-bottom, 2);
+}
+
+h2, h3 {
+    @include vr-vertical-rhythm(margin-top, 2);
+    @include vr-vertical-rhythm(margin-bottom, 1);
+}
+
+h4, h5, h6,
+p,
+ul, ol, dl,
+table,
+pre,
+address {
+    margin-top: 0;
+    @include vr-vertical-rhythm(margin-bottom, 1);
 }
 
 .grid {
@@ -317,14 +235,8 @@ h6 {
     bottom: 0;
     left: 0;
     .line {
-        font-size: 1rem;
-        line-height: $base-line-height;
+        @include vr-font-size;
         box-shadow: 0 1px 0 #eee;
-        @if $shift-vertical-rhythm == true {
-            @include media-query(vr) {
-                line-height: $shift-line-height;
-            }
-        }
     }
 }
 
